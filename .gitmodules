@@ -1,3 +1,6 @@
-[submodule "gnu-efi"]
-	path = gnu-efi
-	url = https://git.code.sf.net/p/gnu-efi/code
+[submodule "contrib/posix-uefi"]
+	path = posix-uefi
+	url = https://gitlab.com/bztsrc/posix-uefi.git
+[submodule "util"]
+	path = util
+	url = https://github.com/targetdisk/bash-util.git

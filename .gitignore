@@ -1,0 +1,9 @@
+*.swp
+*.swn
+*.swo
+
+*.efi
+*.o
+*.so
+
+bak

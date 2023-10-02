@@ -12,38 +12,39 @@ void fillScreen( uint32_t color, efi_gop_mode_t *mode )
 }
 
 static
-inline int bounded_rand( int lower, int upper )
+inline void putPixel_32bpp( int x, int y, uint32_t pixel, efi_gop_mode_t *mode)
+{
+  *((uint32_t*)(mode->FrameBufferBase + 4 * mode->Information->PixelsPerScanLine * y + 4 * x))
+    = pixel;
+}
+
+static
+inline int boundedRand( int lower, int upper )
 {
   return ( rand() % ( upper - lower + 1 ) ) + lower;
 }
 
 void blitPixmap( uint32_t x, uint32_t y, efi_gop_mode_t *mode, pixmap_t *pixmap )
 {
-  uint32_t nlines,
-           *src = pixmap->data,
-           *dst = (uint32_t *)mode->FrameBufferBase
-                  + ( y * mode->Information->PixelsPerScanLine * sizeof(uint32_t) )
-                  + ( x * sizeof(uint32_t) );
-
-  size_t npixels = ( ( x + pixmap->width ) < mode->Information->PixelsPerScanLine )
-                           ? pixmap->width
-                           : mode->Information->PixelsPerScanLine - ( x + pixmap->width );
-
-  size_t nbytes = sizeof(uint32_t) * npixels;
-
-  for ( nlines = ( ( y + pixmap->width ) < mode->Information->VerticalResolution )
-                          ? pixmap->width : ( mode->Information->VerticalResolution - y );
-        nlines; nlines-- )
+  uint32_t *pixel = pixmap->data;
+  size_t pixcount = 0;
+  while ( pixcount < pixmap->n_pixels )
   {
-    memcpy((void *)dst, (void *)src, nbytes);
-    dst += ( mode->Information->PixelsPerScanLine - npixels );
+    if ( *pixel & 0xff )
+        putPixel_32bpp( ( pixcount % pixmap->width + x ), y, 0xffe400, mode );
+
+    pixcount++;
+    pixel++;
+
+    if ( pixcount % pixmap->width == 0 )
+      y++;
   }
 }
 
 void drawTrident( efi_gop_mode_t *mode, pixmap_t *pixmap )
 {
-  int x = (uint32_t)bounded_rand( 0, mode->Information->HorizontalResolution - pixmap->width ),
-      y = (uint32_t)bounded_rand( 0, mode->Information->VerticalResolution - pixmap->height );
+  int x = (uint32_t)boundedRand( 0, mode->Information->HorizontalResolution - pixmap->width ),
+      y = (uint32_t)boundedRand( 0, mode->Information->VerticalResolution - pixmap->height );
 
 
   blitPixmap( x, y, mode, pixmap );

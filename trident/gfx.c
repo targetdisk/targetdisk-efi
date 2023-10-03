@@ -30,8 +30,8 @@ void blitPixmap( uint32_t x, uint32_t y, efi_gop_mode_t *mode, pixmap_t *pixmap 
   size_t pixcount = 0;
   while ( pixcount < pixmap->n_pixels )
   {
-    if ( *pixel & 0xff )
-        putPixel_32bpp( ( pixcount % pixmap->width + x ), y, 0xffe400, mode );
+    if ( *pixel & 0xff000000 )
+        putPixel_32bpp( ( pixcount % pixmap->width + x ), y, *pixel, mode );
 
     pixcount++;
     pixel++;

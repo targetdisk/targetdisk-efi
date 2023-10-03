@@ -1,6 +1,7 @@
 #include <errno.h>
 #include "uefi/uefi.h"
 #include "gfx.h"
+#include "codec.h"
 
 #ifndef RLE1_ONLY
 void rle_decompress(pixmap_t *pixmap) {
@@ -12,7 +13,7 @@ void rle_decompress(pixmap_t *pixmap) {
     for (size_t pi = 0; pi < pixmap->n_pixels; rledata++) {
       pixel = rledata++;
       for (uint32_t pi_end = pi + *rledata; pi < pi_end; pi++) {
-        *rawdata++ = *pixel;
+        *rawdata++ = RGBA2ARGB_32(*pixel);
       }
     }
   } else {
@@ -30,9 +31,10 @@ static inline uint32_t *rle1_put_pixels(uint32_t pixel, size_t reps, uint32_t *r
 
 void rle1_decompress(pixmap_t *pixmap) {
   uint32_t *rledata = pixmap->data;
-  uint32_t *fgcolor = rledata++;
+  uint32_t fgcolor = RGBA2ARGB_32(*rledata);
   uint32_t *rawdata = malloc(sizeof(uint32_t) * pixmap->n_pixels);
   if (rawdata) {
+    rledata++; /* Increment past fg color. */
     pixmap->data = rawdata;
     unsigned char byte;
     size_t reps;
@@ -41,7 +43,7 @@ void rle1_decompress(pixmap_t *pixmap) {
       byte = (unsigned char)(*rledata >> packlocat);
       reps = (size_t)(byte & 127);
       pi += reps;
-      rawdata = rle1_put_pixels((byte >> 7 ? *fgcolor : 0), reps, rawdata);
+      rawdata = rle1_put_pixels((byte >> 7 ? fgcolor : 0), reps, rawdata);
       if (!packlocat) {
         packlocat = 24;
         rledata++;
@@ -55,9 +57,21 @@ void rle1_decompress(pixmap_t *pixmap) {
   }
 }
 
+void rgba2argb_32(pixmap_t *pixmap) {
+  size_t p = pixmap->n_pixels;
+  uint32_t *d = pixmap->data;
+
+  while (p) {
+    *d = ( *d << 24 ) + ( *d >> 8 );
+    p--;
+    d++;
+  }
+}
+
 void decompress(pixmap_t *pixmap) {
   switch (pixmap->datatype) {
     case RAW:
+      rgba2argb_32(pixmap);
       return;
 #ifndef RLE1_ONLY
     case RLE:

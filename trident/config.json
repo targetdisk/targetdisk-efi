@@ -1,0 +1,14 @@
+{
+    "bg_color": "616db8",
+    "byte_order": "big",
+
+    "gfx": [
+        {
+            "name": "trident",
+            "dimens": [212, 474],
+            "pixmap": "USB_icon_cropped.data",
+            "fgcolor": "ffe400",
+            "type": 2
+        }
+    ]
+}

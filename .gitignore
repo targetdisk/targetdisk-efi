@@ -6,6 +6,10 @@
 *.o
 *.so
 
+trident/img_data.h
+
 NvVars
 
 bak
+pub.css
+README.html

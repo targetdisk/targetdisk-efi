@@ -1,7 +1,7 @@
 #ifndef GFX_H
 #define GFX_H
 #include "uefi/uefi.h"
-enum imgdata_type { RAW, RLE, RLE1 };
+enum imgdata_type { RAW, RLE, RLE1, RAW_BL, RLE_BL, RLE1_BL };
 
 typedef struct pixmap_s {
   uint32_t width;

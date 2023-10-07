@@ -20,6 +20,8 @@ void rle_decompress(pixmap_t *pixmap) {
     fprintf(stderr, "ERROR: malloc failed on pixmap data!!\n");
     exit(ENOMEM);
   }
+
+  pixmap->datatype = ( pixmap->datatype == RLE ) ? RAW : RAW_BL;
 }
 #endif /* RLE1_ONLY */
 
@@ -55,6 +57,8 @@ void rle1_decompress(pixmap_t *pixmap) {
     fprintf(stderr, "ERROR: malloc failed on pixmap data!!\n");
     exit(ENOMEM);
   }
+
+  pixmap->datatype = ( pixmap->datatype == RLE1 ) ? RAW : RAW_BL;
 }
 
 void rgba2argb_32(pixmap_t *pixmap) {
@@ -71,14 +75,17 @@ void rgba2argb_32(pixmap_t *pixmap) {
 void decompress(pixmap_t *pixmap) {
   switch (pixmap->datatype) {
     case RAW:
+    case RAW_BL:
       rgba2argb_32(pixmap);
       return;
 #ifndef RLE1_ONLY
     case RLE:
+    case RLE_BL:
       rle_decompress(pixmap);
       return;
 #endif /* RLE1_ONLY */
     case RLE1:
+    case RLE1_BL:
       rle1_decompress(pixmap);
       return;
     default:

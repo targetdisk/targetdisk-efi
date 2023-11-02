@@ -1,8 +1,8 @@
 #include "uefi/uefi.h"
 
-#include "img_data.h"
-#include "codec.h"
-#include "gfx.h"
+#include "codec/codec.h"
+#include "gfx/gfx.h"
+#include "gfx/img_data.h"
 
 int main( int argc, char **argv )
 {

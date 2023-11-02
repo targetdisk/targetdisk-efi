@@ -5,5 +5,8 @@
 	path = util
 	url = https://github.com/targetdisk/bash-util.git
 [submodule "trident/setup_scripts"]
-	path = trident/setup_scripts
+	path = gfx/setup_scripts
 	url = https://github.com/targetdisk/targetdisk
+[submodule "td-img"]
+	path = codec
+	url = https://github.com/targetdisk/td-img

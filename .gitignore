@@ -6,7 +6,7 @@
 *.o
 *.so
 
-trident/img_data.h
+gfx/img_data.h
 
 NvVars
 
